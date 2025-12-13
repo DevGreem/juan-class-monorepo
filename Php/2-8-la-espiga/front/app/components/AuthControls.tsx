@@ -4,12 +4,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { deleteCookie, getCookie } from "cookies-next";
-
-type AuthUser = {
-  id: number;
-  name: string;
-  role_id: number;
-};
+import { clearCart } from "@/src/utils/cart";
+import { AuthUser } from "@/src/types/auth";
 
 export default function AuthControls() {
   const [user, setUser] = useState<AuthUser | null>(null);
@@ -19,6 +15,7 @@ export default function AuthControls() {
     const cookieValue = getCookie("auth_user");
     if (!cookieValue) {
       setUser(null);
+      clearCart();
       return;
     }
 
@@ -28,6 +25,7 @@ export default function AuthControls() {
     } catch (error) {
       console.error("No se pudo leer el usuario de la cookie", error);
       setUser(null);
+      clearCart();
     }
   };
 
@@ -55,6 +53,7 @@ export default function AuthControls() {
     deleteCookie("auth_user", options);
     deleteCookie("auth_token", options);
     setUser(null);
+    clearCart();
     window.dispatchEvent(new Event("auth-change"));
     router.push("/");
   };

@@ -1,16 +1,7 @@
-type Feature = {
-  title: string;
-  description: string;
-  detail: string;
-};
+import Image from "next/image";
+import { HomeCatalogProduct, HomeFeature } from "@/src/types/home";
 
-type Product = {
-  name: string;
-  note: string;
-  price: string;
-};
-
-const features: Feature[] = [
+const features: HomeFeature[] = [
   {
     title: "Masa madre viva",
     description: "Fermentacion lenta 36 horas para sabor profundo y corteza dorada.",
@@ -28,7 +19,7 @@ const features: Feature[] = [
   },
 ];
 
-const products: Product[] = [
+const products: HomeCatalogProduct[] = [
   { name: "Baguette rustica", note: "corteza crujiente, miga aireada", price: "$3.20" },
   { name: "Hogaza de campo", note: "masa madre, 1 kg", price: "$5.80" },
   { name: "Pan de semillas", note: "linaza, girasol y avena", price: "$4.90" },
@@ -122,6 +113,7 @@ export default function Home() {
                   Artesanal
                 </div>
               </div>
+              <Image src="https://images.adsttc.com/media/images/66f4/30a0/2684/7b6b/efde/c5f5/large_jpg/mere-panaderia-y-cafe-de-especialidad-eg-arquitectura-and-asociados-plus-karina-vinocur_3.jpg?1727279343" alt="Panaderia La Espiga" width={400} height={300} className="rounded-2xl shadow-md" />
               <p className="text-base leading-7 text-stone-700">
                 Nuestro obrador arranca antes del amanecer con la misma receta: masa madre
                 alimentada a diario, mantequilla de origen local y paciencia. Si quieres ver

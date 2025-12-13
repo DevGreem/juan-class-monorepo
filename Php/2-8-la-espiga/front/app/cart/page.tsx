@@ -4,71 +4,9 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getCookie } from "cookies-next";
 import PHPApi from "@/src/types/PHPApi";
-import {
-  CartItem,
-  clearCart,
-  getCartItems,
-  removeItemFromCart,
-  updateCartQuantity,
-} from "@/src/utils/cart";
-
-type CartPreviewItem = {
-  salable_product_id: number;
-  quantity: number;
-  tax_rate: number;
-  unit_price: number;
-  subtotal: number;
-  tax_amount: number;
-  total: number;
-  product: {
-    id: number;
-    name: string;
-    description?: string | null;
-    stock?: number;
-  };
-};
-
-type CartPreviewResponse = {
-  items: CartPreviewItem[];
-  summary: {
-    subtotal: number;
-    taxes: number;
-    total: number;
-  };
-};
-
-type SaleResponse = {
-  sale: {
-    id: number;
-    user_id: number;
-    status: string;
-    paid_at?: string | null;
-    code: string;
-    subtotal: number;
-    total: number;
-    tax_total: number;
-    line_count?: number;
-    units_count?: number;
-    created_at?: string;
-    updated_at?: string;
-  };
-  items: Array<{
-    id: number;
-    sale_id: number;
-    salable_product_id: number;
-    quantity: number;
-    taxes?: number | null;
-    unit_price: number;
-    subtotal: number;
-    total: number;
-    tax_amount: number;
-    product: {
-      id: number;
-      name: string;
-      description?: string | null;
-    };
-  }>;
-};
+import { clearCart, getCartItems, removeItemFromCart, updateCartQuantity } from "@/src/utils/cart";
+import { CartItem, CartPreviewItem, CartPreviewResponse } from "@/src/types/cart";
+import { SaleResponse } from "@/src/types/sales";
 
 export default function CartPage() {
   const router = useRouter();

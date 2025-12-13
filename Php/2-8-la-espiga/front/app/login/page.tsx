@@ -4,16 +4,9 @@ import { FormEvent, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import PHPApi from "@/src/types/PHPApi";
 import { deleteCookie, setCookie } from "cookies-next";
+import { ApiUser } from "@/src/types/auth";
 
-const CUSTOMER_ROLE_ID =  Number(process.env.NEXT_PUBLIC_CUSTOMER_ROLE_ID || 2);
-
-type ApiUser = {
-  id: number;
-  name: string;
-  email: string;
-  phone?: string;
-  role_id: number;
-};
+const CUSTOMER_ROLE_ID = Number(process.env.NEXT_PUBLIC_CUSTOMER_ROLE_ID || 2);
 
 export default function LoginPage() {
   const [mode, setMode] = useState<"login" | "register">("login");

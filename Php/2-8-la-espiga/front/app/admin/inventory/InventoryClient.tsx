@@ -2,20 +2,10 @@
 
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import PHPApi from "@/src/types/PHPApi";
-
-type Product = {
-  id: number;
-  name: string;
-  sku: string;
-  stock: number;
-  cost: number | string | null;
-  is_active: boolean;
-  categories?: { id: number; name: string }[];
-  salable?: { price: number | string } | null;
-};
+import { InventoryProduct } from "@/src/types/inventory";
 
 export default function InventoryClient() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<InventoryProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
@@ -63,7 +53,7 @@ export default function InventoryClient() {
     setSearch(event.target.value);
   };
 
-  const startEditing = (product: Product) => {
+  const startEditing = (product: InventoryProduct) => {
     setEditingId(product.id);
     setFormState({
       name: product.name,
@@ -128,6 +118,8 @@ export default function InventoryClient() {
         return;
       }
       payload.price = priceValue;
+    } else {
+      payload.price = null;
     }
 
     try {

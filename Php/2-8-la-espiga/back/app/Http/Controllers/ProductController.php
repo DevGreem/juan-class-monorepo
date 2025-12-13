@@ -56,7 +56,7 @@ class ProductController extends Controller
             'sku' => ['sometimes', 'string', 'max:100', Rule::unique('products', 'sku')->ignore($product->id)],
             'description' => ['nullable', 'string'],
             'cost' => ['nullable', 'numeric', 'min:0'],
-            'price' => ['sometimes', 'numeric', 'min:0'],
+            'price' => ['sometimes', 'nullable', 'numeric', 'min:0'],
             'stock' => ['sometimes', 'integer', 'min:0'],
             'thumbnail' => ['nullable', 'string', 'max:255'],
             'is_active' => ['boolean'],
@@ -68,10 +68,14 @@ class ProductController extends Controller
         $product->update($productData);
 
         if (array_key_exists('price', $data)) {
-            $product->salable()->updateOrCreate(
-                ['product_id' => $product->id],
-                ['price' => $data['price']]
-            );
+            if ($data['price'] === null) {
+                $product->salable()->delete();
+            } else {
+                $product->salable()->updateOrCreate(
+                    ['product_id' => $product->id],
+                    ['price' => $data['price']]
+                );
+            }
         }
 
         if (array_key_exists('categories', $data)) {

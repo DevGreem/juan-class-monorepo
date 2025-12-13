@@ -1,18 +1,9 @@
 "use client";
 
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
+import { CartItem } from "@/src/types/cart";
 
-type CartCookie = Array<{
-  salable_product_id: number;
-  quantity: number;
-  taxes?: number;
-}>;
-
-export type CartItem = {
-  salable_product_id: number;
-  quantity: number;
-  taxes?: number;
-};
+type CartCookie = CartItem[];
 
 const CART_COOKIE_KEY = "cart_items";
 

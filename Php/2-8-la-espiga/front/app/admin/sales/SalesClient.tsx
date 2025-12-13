@@ -2,21 +2,7 @@
 
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import PHPApi from "@/src/types/PHPApi";
-
-type SaleSummary = {
-  id: number;
-  code: string;
-  status: string;
-  paid_at?: string | null;
-  subtotal: number;
-  total: number;
-  tax_total: number;
-  line_count?: number;
-  units_count?: number;
-  user_id: number;
-  user_name?: string | null;
-  user_email?: string | null;
-};
+import { SaleSummary } from "@/src/types/sales";
 
 export default function SalesClient() {
   const [sales, setSales] = useState<SaleSummary[]>([]);
@@ -49,13 +35,15 @@ export default function SalesClient() {
       const saleId = sale.id.toString();
       const userName = sale.user_name?.toLowerCase() ?? "";
       const userEmail = sale.user_email?.toLowerCase() ?? "";
+      const userPhone = sale.user_phone?.toLowerCase() ?? "";
 
       return (
         code.includes(normalized) ||
         status.includes(normalized) ||
         saleId.includes(normalized) ||
         userName.includes(normalized) ||
-        userEmail.includes(normalized)
+        userEmail.includes(normalized) ||
+        userPhone.includes(normalized)
       );
     });
   }, [sales, search]);
@@ -90,7 +78,7 @@ export default function SalesClient() {
               <input
                 id="sales-search"
                 type="search"
-                placeholder="Buscar por ID, codigo, usuario o estado"
+                placeholder="Buscar por ID, codigo, usuario, telefono o estado"
                 value={search}
                 onChange={handleSearchChange}
                 className="w-full rounded-full border border-amber-200 bg-white/80 px-4 py-2 text-sm text-stone-700 shadow-sm focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-200"
@@ -159,6 +147,9 @@ export default function SalesClient() {
                         <span className="font-semibold text-stone-900">{sale.user_name ?? `Usuario #${sale.user_id}`}</span>
                         {sale.user_email && (
                           <span className="text-xs text-stone-500">{sale.user_email}</span>
+                        )}
+                        {sale.user_phone && (
+                          <span className="text-xs text-stone-500">Tel: {sale.user_phone}</span>
                         )}
                       </div>
                     </td>

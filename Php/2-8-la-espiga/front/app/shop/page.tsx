@@ -3,16 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import PHPApi from "@/src/types/PHPApi";
 import { addItemToCart, getCartItems } from "@/src/utils/cart";
-
-type SalableProduct = {
-  id: number;
-  price: string | number;
-  product: {
-    id: number;
-    name: string;
-    description?: string;
-  };
-};
+import { SalableProduct } from "@/src/types/products";
 
 export default function ShopPage() {
   const [items, setItems] = useState<SalableProduct[]>([]);
@@ -142,6 +133,18 @@ export default function ShopPage() {
                   <div>
                     <p className="text-lg font-semibold text-stone-950">{item.product.name}</p>
                     <p className="text-sm text-stone-600">{item.product.description ?? "Disponible"}</p>
+                    {item.product.categories && item.product.categories.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {item.product.categories.map((category) => (
+                          <span
+                            key={category.id}
+                            className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800"
+                          >
+                            {category.name}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                   <span className="rounded-full bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-900">
                     ${Number(item.price).toFixed(2)}

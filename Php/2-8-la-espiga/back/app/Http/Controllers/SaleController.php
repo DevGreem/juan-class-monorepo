@@ -17,7 +17,7 @@ class SaleController extends Controller
         $limit = max(1, min($limit, 500));
 
         $salesQuery = DB::table('v_sales')
-            ->select('v_sales.*', 'users.name as user_name', 'users.email as user_email')
+            ->select('v_sales.*', 'users.name as user_name', 'users.email as user_email', 'users.phone as user_phone')
             ->join('users', 'users.id', '=', 'v_sales.user_id')
             ->orderByDesc('paid_at')
             ->orderByDesc('v_sales.id');
@@ -177,7 +177,7 @@ class SaleController extends Controller
     private function buildSaleResponse(int $saleId): array
     {
         $saleRow = DB::table('v_sales')
-            ->select('v_sales.*', 'users.name as user_name', 'users.email as user_email')
+            ->select('v_sales.*', 'users.name as user_name', 'users.email as user_email', 'users.phone as user_phone')
             ->join('users', 'users.id', '=', 'v_sales.user_id')
             ->where('v_sales.id', $saleId)
             ->first();
@@ -228,6 +228,7 @@ class SaleController extends Controller
             'user_id' => (int) $row->user_id,
             'user_name' => $row->user_name ?? null,
             'user_email' => $row->user_email ?? null,
+            'user_phone' => $row->user_phone ?? null,
             'status' => $row->status,
             'paid_at' => $row->paid_at,
             'code' => $row->code,
