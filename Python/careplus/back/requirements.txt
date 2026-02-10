@@ -1,0 +1,12 @@
+fastapi==0.128.0 # API Framework
+fastapi_socketio==0.0.10 # API Websockets manager (Update data in real-time)
+fastapi_cache==0.1.0 # API Cache Manager
+upstash_redis
+pyjwt==2.10.1 # Json Web Tokens
+supabase==2.27.1 # Supabase Connection
+uvicorn==0.40.0 # FastAPI Server
+pytest==9.0.2 # Unitary testing
+schedule==1.2.2 # Schedule tasks
+polars==1.36.1 # Data analytics
+dotenv==0.9.9 # Environment Variables
+pydantic_settings==2.12.0
