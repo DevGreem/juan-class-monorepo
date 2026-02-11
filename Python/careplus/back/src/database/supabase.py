@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from src.settings import settings
+from src._settings import settings
 
 from supabase import (
     create_client,

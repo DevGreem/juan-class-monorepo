@@ -8,10 +8,12 @@ class Settings(BaseSettings):
     '''
     
     def __init__(self):
-        super().__init__(False, _env_file=".env")
+        super().__init__(_case_sensitive=False, _env_file=".env")
         
     fastapi_env: Literal['local', 'production'] = 'local'
     debug: bool = True
+    
+    app_redis_url: str
     
     prod_supabase_key: str
     test_supabase_key: str

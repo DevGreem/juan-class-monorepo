@@ -3,7 +3,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from src.database import SupabaseClient
 from supabase_auth import UserResponse
 import logging
-from src.classes import AuthContext
+from src.database.classes import AuthContext
 
 security = HTTPBearer()
 
