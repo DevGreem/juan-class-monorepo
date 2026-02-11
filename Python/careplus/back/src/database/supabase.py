@@ -13,8 +13,7 @@ from supabase_auth import (
 )
 
 from typing import (
-    Optional,
-    Any
+    Optional
 )
 
 @dataclass

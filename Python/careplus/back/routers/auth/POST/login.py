@@ -1,5 +1,6 @@
 from fastapi import Response, HTTPException, Request
-from src import LoginResponse, SupabaseClient
+from src.database import SupabaseClient
+from src.database.classes import LoginResponse
 from supabase_auth import SignInWithPasswordCredentials
 from . import AUTH_ROUTER
 
