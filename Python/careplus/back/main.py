@@ -1,0 +1,54 @@
+import fastapi
+from fastapi import FastAPI, Depends
+from fastapi.middleware.cors import CORSMiddleware
+
+from contextlib import asynccontextmanager
+# import redis.asyncio as asyncredis
+
+from routers import ROUTERS #, api_identifier
+
+# from fastapi_limiter import FastAPILimiter
+# from fastapi_limiter.depends import RateLimiter
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# @asynccontextmanager
+# async def lifespan(_: FastAPI):
+#     redis_connection = asyncredis.from_url("redis://localhost:6379", encoding='utf8')
+#     await FastAPILimiter.init(redis_connection, identifier=api_identifier)
+#     yield
+#     await FastAPILimiter.close()
+
+APP: FastAPI = FastAPI(
+    title="POMARAY API",
+    description="API of POMARAY",
+    version="0.1.0",
+    docs_url="/docs",
+    #lifespan=lifespan
+)
+APP.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@APP.get("/")#, dependencies=[Depends(RateLimiter(times=2, seconds=30))])
+def home():
+    return {"status": "OK"}
+
+for router in ROUTERS:
+    APP.include_router(router)
+
+if __name__ == "__main__":
+    import uvicorn
+    
+    uvicorn.run(
+        "main:APP",
+        host="0.0.0.0",
+        port=8000,
+        reload=True
+    )
