@@ -15,9 +15,13 @@ const NAV_ITEMS = [
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, canManageUsers } = useAuth();
 
   if (!isAuthenticated) return null;
+
+  const navItems = canManageUsers
+    ? [...NAV_ITEMS, { href: "/users", label: "Usuarios", icon: "🛡️" }]
+    : NAV_ITEMS;
 
   return (
     <aside className="w-64 bg-card border-r border-border min-h-screen flex flex-col">
@@ -30,7 +34,7 @@ export default function Sidebar() {
       </div>
 
       <nav className="flex-1 p-4 space-y-1">
-        {NAV_ITEMS.map((item) => {
+        {navItems.map((item) => {
           const isActive = pathname === item.href || 
             (item.href !== "/" && pathname.startsWith(item.href));
           return (

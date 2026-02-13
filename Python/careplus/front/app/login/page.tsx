@@ -3,17 +3,15 @@
 import { useState, useRef } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
-import { login, signUp, verifyOtp } from "@/lib/api";
+import { login, verifyOtp } from "@/lib/api";
 import Image from "next/image";
 
 export default function LoginPage() {
   const { setToken } = useAuth();
   const router = useRouter();
-  const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [successMsg, setSuccessMsg] = useState("");
   const [loading, setLoading] = useState(false);
 
   // 2FA state
@@ -59,24 +57,13 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      if (isSignUp) {
-        const result = await signUp(email, password);
-        if (result.success && result.requires_verification) {
-          setSuccessMsg(result.message || "Cuenta creada. Revisa tu correo para confirmar tu cuenta.");
-          setIsSignUp(false);
-        } else if (result.success && result.token) {
-          setToken(result.token);
-          router.push("/");
-        }
-      } else {
-        const result = await login(email, password);
-        if (result.success && result.requires_verification && result.user_id) {
-          setNeeds2FA(true);
-          setUserId(result.user_id);
-        } else if (result.success && result.token) {
-          setToken(result.token);
-          router.push("/");
-        }
+      const result = await login(email, password);
+      if (result.success && result.requires_verification && result.user_id) {
+        setNeeds2FA(true);
+        setUserId(result.user_id);
+      } else if (result.success && result.token) {
+        setToken(result.token);
+        router.push("/");
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error de autenticación");
@@ -133,18 +120,12 @@ export default function LoginPage() {
         {!needs2FA ? (
           <>
             <h2 className="text-xl font-semibold mb-6">
-              {isSignUp ? "Crear Cuenta" : "Iniciar Sesión"}
+              Iniciar Sesión
             </h2>
 
             {error && (
               <div className="bg-danger/10 border border-danger/30 text-danger rounded-lg p-3 mb-4 text-sm">
                 {error}
-              </div>
-            )}
-
-            {successMsg && (
-              <div className="bg-green-50 border border-green-300 text-green-700 rounded-lg p-3 mb-4 text-sm">
-                {successMsg}
               </div>
             )}
 
@@ -179,19 +160,9 @@ export default function LoginPage() {
                 disabled={loading}
                 className="w-full py-2.5 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors disabled:opacity-50 cursor-pointer"
               >
-                {loading ? "Cargando..." : isSignUp ? "Registrarse" : "Ingresar"}
+                {loading ? "Cargando..." : "Ingresar"}
               </button>
             </form>
-
-            <p className="text-center text-sm text-muted mt-6">
-              {isSignUp ? "¿Ya tienes cuenta?" : "¿No tienes cuenta?"}{" "}
-              <button
-                onClick={() => setIsSignUp(!isSignUp)}
-                className="text-primary font-medium hover:underline cursor-pointer"
-              >
-                {isSignUp ? "Inicia Sesión" : "Regístrate"}
-              </button>
-            </p>
           </>
         ) : (
           <>

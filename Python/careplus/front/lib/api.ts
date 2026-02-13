@@ -57,16 +57,19 @@ export async function verifyOtp(userId: string, code: string) {
   });
 }
 
-export async function signUp(email: string, password: string) {
-  return fetchAPI<{
-    token: string | null;
-    success: boolean;
-    requires_verification: boolean;
-    message: string | null;
-  }>("/auth/sign_up", {
-    method: "POST",
-    body: JSON.stringify({ email, password }),
-  });
+export async function getMe(token: string) {
+  return fetchAPI<UserMe>("/auth/me", { token });
+}
+
+export async function getUsers(token: string) {
+  return fetchAPI<UserListItem[]>("/auth/users", { token });
+}
+
+export async function createUser(token: string, data: CreateUserRequest) {
+  return fetchAPI<{ success: boolean; message: string; user_id: string | null }>(
+    "/auth/sign_up",
+    { method: "POST", body: JSON.stringify(data), token }
+  );
 }
 
 // ── Patients ──
@@ -283,4 +286,38 @@ export interface TreatmentCreate {
   start_date?: string;
   end_date?: string;
   status?: string;
+}
+
+export interface UserMe {
+  user_id: string;
+  email: string;
+  role_name: string;
+  full_name: string;
+  specialty?: string;
+  license_number?: string;
+  phone?: string;
+  is_active: boolean;
+  can_manage_users: boolean;
+}
+
+export interface UserListItem {
+  user_id: string;
+  email: string;
+  role_name: string;
+  full_name: string;
+  specialty?: string;
+  license_number?: string;
+  phone?: string;
+  is_active: boolean;
+  created_at?: string;
+}
+
+export interface CreateUserRequest {
+  email: string;
+  password: string;
+  full_name: string;
+  role: string;
+  specialty?: string;
+  license_number?: string;
+  phone?: string;
 }
