@@ -6,3 +6,4 @@ AUTH_ROUTER: APIRouter = APIRouter(
 )
 
 from . import POST
+from . import GET

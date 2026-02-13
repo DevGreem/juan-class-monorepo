@@ -24,6 +24,9 @@ class Settings(BaseSettings):
     prod_supabase_public_api_key: str
     test_supabase_public_api_key: str
     
+    prod_supabase_service_role_key: str = ''
+    test_supabase_service_role_key: str = ''
+    
     # Resend para envío de correos (2FA)
     resend_api_key: str = ''
     resend_from_email: str = 'onboarding@resend.dev'
@@ -83,6 +86,16 @@ class Settings(BaseSettings):
             self.test_supabase_public_api_key
             if self.env_is_local()
             else self.prod_supabase_public_api_key
+        )
+
+    @property
+    def supabase_service_role_key(self) -> str:
+        '''Returns supabase service role key (local or production)'''
+        
+        return (
+            self.test_supabase_service_role_key
+            if self.env_is_local()
+            else self.prod_supabase_service_role_key
         )
 
 @lru_cache

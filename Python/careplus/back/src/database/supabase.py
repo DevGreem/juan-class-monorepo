@@ -70,6 +70,14 @@ class SupabaseClient:
     def generate_client() -> Client:
         return create_client(settings.supabase_url, settings.supabase_key)
     
+    @staticmethod
+    def generate_admin_client() -> Client:
+        """Generate a client using the service_role key for admin operations."""
+        service_key = settings.supabase_service_role_key
+        if not service_key:
+            raise Exception("Service role key not configured. Set PROD/TEST_SUPABASE_SERVICE_ROLE_KEY in .env")
+        return create_client(settings.supabase_url, service_key)
+    
     @property
     def client(self):
         return self.__client
@@ -106,4 +114,26 @@ class SupabaseClient:
             user_id=response.user.id,
             email=response.user.email or "",
             needs_confirmation=response.session is None
+        )
+
+    @staticmethod
+    def admin_create_user(email: str, password: str) -> SupabaseSignUpResult:
+        """Create a user using the admin/service_role API (skips email confirmation)."""
+        
+        admin_client = SupabaseClient.generate_admin_client()
+        
+        response = admin_client.auth.admin.create_user({
+            "email": email,
+            "password": password,
+            "email_confirm": True,
+        })
+        
+        if not response.user:
+            raise Exception("Admin user creation failed")
+        
+        return SupabaseSignUpResult(
+            access_token=None,
+            user_id=response.user.id,
+            email=response.user.email or "",
+            needs_confirmation=False
         )
