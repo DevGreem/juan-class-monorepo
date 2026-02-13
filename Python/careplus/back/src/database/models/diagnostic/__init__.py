@@ -1,0 +1,3 @@
+from .__DiagnosticCreate import DiagnosticCreate
+from .__DiagnosticUpdate import DiagnosticUpdate
+from .__DiagnosticResponse import DiagnosticResponse

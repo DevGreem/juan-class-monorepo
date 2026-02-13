@@ -1,0 +1,3 @@
+from .__MedicalHistoryCreate import MedicalHistoryCreate
+from .__MedicalHistoryUpdate import MedicalHistoryUpdate
+from .__MedicalHistoryResponse import MedicalHistoryResponse

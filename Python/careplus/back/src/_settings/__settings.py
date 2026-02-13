@@ -24,6 +24,10 @@ class Settings(BaseSettings):
     prod_supabase_public_api_key: str
     test_supabase_public_api_key: str
     
+    # Resend para envío de correos (2FA)
+    resend_api_key: str = ''
+    resend_from_email: str = 'onboarding@resend.dev'
+    
     # class Config:
     #     env_file = ".env"
     #     case_sensitive = False

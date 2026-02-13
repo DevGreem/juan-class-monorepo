@@ -1,7 +1,7 @@
 fastapi==0.128.0 # API Framework
 fastapi_socketio==0.0.10 # API Websockets manager (Update data in real-time)
 fastapi_cache==0.1.0 # API Cache Manager
-upstash_redis
+redis==7.1.1 # Manage cache
 pyjwt==2.10.1 # Json Web Tokens
 supabase==2.27.1 # Supabase Connection
 uvicorn==0.40.0 # FastAPI Server
@@ -11,3 +11,4 @@ polars==1.36.1 # Data analytics
 dotenv==0.9.9 # Environment Variables
 pydantic_settings==2.12.0
 pydantic[email]
+resend==2.21.0 # Email sending (2FA)

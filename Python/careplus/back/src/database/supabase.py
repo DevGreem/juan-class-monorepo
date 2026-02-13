@@ -19,7 +19,16 @@ from typing import (
 @dataclass
 class SupabaseLoginResult:
     access_token: str
+    user_id: str
+    email: str
     logged_client: "SupabaseClient"
+
+@dataclass
+class SupabaseSignUpResult:
+    access_token: Optional[str]
+    user_id: str
+    email: str
+    needs_confirmation: bool
 
 class SupabaseClient:
     """Supabase Client
@@ -66,7 +75,7 @@ class SupabaseClient:
         return self.__client
     
     @staticmethod
-    def sign_in(args: SignInWithPasswordCredentials) -> str:
+    def sign_in(args: SignInWithPasswordCredentials) -> SupabaseLoginResult:
         
         client = SupabaseClient.generate_client()
         
@@ -75,16 +84,26 @@ class SupabaseClient:
         if not response.session:
             raise Exception("Invalid Credentials")
         
-        return response.session.access_token
+        return SupabaseLoginResult(
+            access_token=response.session.access_token,
+            user_id=response.user.id if response.user else "",
+            email=response.user.email if response.user else "",
+            logged_client=SupabaseClient(response.session.access_token)
+        )
 
     @staticmethod
-    def sign_up(args: SignUpWithPasswordCredentials) -> str:
+    def sign_up(args: SignUpWithPasswordCredentials) -> SupabaseSignUpResult:
         
         client = SupabaseClient.generate_client()
         
         response = client.auth.sign_up(credentials=args)
         
-        if not response.session:
-            raise Exception("Invalid Credentials")
+        if not response.user:
+            raise Exception("Sign up failed")
         
-        return response.session.access_token
+        return SupabaseSignUpResult(
+            access_token=response.session.access_token if response.session else None,
+            user_id=response.user.id,
+            email=response.user.email or "",
+            needs_confirmation=response.session is None
+        )

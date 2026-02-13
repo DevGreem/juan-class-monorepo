@@ -1,0 +1,3 @@
+from .__ConsultationCreate import ConsultationCreate
+from .__ConsultationUpdate import ConsultationUpdate
+from .__ConsultationResponse import ConsultationResponse

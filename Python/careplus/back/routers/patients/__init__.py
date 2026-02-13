@@ -6,3 +6,6 @@ PATIENTS_ROUTER: APIRouter = APIRouter(
 )
 
 from . import GET
+from . import POST
+from . import PUT
+from . import DELETE
