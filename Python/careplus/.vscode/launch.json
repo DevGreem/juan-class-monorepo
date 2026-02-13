@@ -1,0 +1,36 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+        "name": "Run Next.js",
+        "type": "node",
+        "request": "launch",
+        "runtimeExecutable": "pnpm",
+        "runtimeArgs": ["dev"],
+        "cwd": "${workspaceFolder}/front",
+        "console": "integratedTerminal"
+        },
+        {
+        "name": "Run FastAPI",
+        "type": "python",
+        "request": "launch",
+        "module": "uvicorn",
+        "args": [
+            "main:APP",
+            "--reload",
+            "--host",
+            "127.0.0.1",
+            "--port",
+            "8000"
+        ],
+        "cwd": "${workspaceFolder}/back",
+        "console": "integratedTerminal"
+        }
+    ],
+    "compounds": [
+        {
+        "name": "Run Frontend + Backend",
+        "configurations": ["Run Next.js", "Run FastAPI"]
+        }
+    ]
+}

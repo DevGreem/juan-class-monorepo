@@ -1,6 +1,6 @@
 from pydantic_settings import BaseSettings
 from functools import lru_cache
-from typing import Literal
+from typing import Literal, Optional
 
 class Settings(BaseSettings):
     '''
@@ -13,18 +13,18 @@ class Settings(BaseSettings):
     fastapi_env: Literal['local', 'production'] = 'local'
     debug: bool = True
     
-    app_redis_url: str
+    app_redis_redis_url: str = ''
     
     prod_supabase_key: str
-    test_supabase_key: str
+    test_supabase_key: str = ''
     
     prod_supabase_url: str
-    test_supabase_url: str
+    test_supabase_url: str = ''
     
     prod_supabase_public_api_key: str
-    test_supabase_public_api_key: str
+    test_supabase_public_api_key: str = ''
     
-    prod_supabase_service_role_key: str = ''
+    prod_supabase_service_role_key: str
     test_supabase_service_role_key: str = ''
     
     # Resend para envío de correos (2FA)

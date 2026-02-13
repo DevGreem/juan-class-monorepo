@@ -8,7 +8,7 @@ uvicorn==0.40.0 # FastAPI Server
 pytest==9.0.2 # Unitary testing
 schedule==1.2.2 # Schedule tasks
 polars==1.36.1 # Data analytics
-dotenv==0.9.9 # Environment Variables
+python-python-dotenv==1.1.0 # Environment Variables
 pydantic_settings==2.12.0
 pydantic[email]
 resend==2.21.0 # Email sending (2FA)
