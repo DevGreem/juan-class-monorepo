@@ -21,14 +21,15 @@ load_dotenv()
 #     yield
 #     await FastAPILimiter.close()
 
-APP: FastAPI = FastAPI(
+app: FastAPI = FastAPI(
     title="POMARAY API",
     description="API of POMARAY",
     version="0.1.0",
     docs_url="/docs",
     #lifespan=lifespan
 )
-APP.add_middleware(
+
+app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
@@ -36,19 +37,19 @@ APP.add_middleware(
     allow_headers=["*"],
 )
 
-@APP.get("/")#, dependencies=[Depends(RateLimiter(times=2, seconds=30))])
+@app.get("/")#, dependencies=[Depends(RateLimiter(times=2, seconds=30))])
 def home():
     return {"status": "OK"}
 
 for router in ROUTERS:
-    APP.include_router(router)
+    app.include_router(router)
 
-if __name__ == "__main__":
-    import uvicorn
+# if __name__ == "__main__":
+#     import uvicorn
     
-    uvicorn.run(
-        "main:APP",
-        host="0.0.0.0",
-        port=8000,
-        reload=True
-    )
+#     uvicorn.run(
+#         "main:app",
+#         host="0.0.0.0",
+#         port=8000,
+#         reload=True
+#     )

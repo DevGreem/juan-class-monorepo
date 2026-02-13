@@ -72,6 +72,20 @@ export async function createUser(token: string, data: CreateUserRequest) {
   );
 }
 
+export async function updateUser(token: string, userId: string, data: UpdateUserRequest) {
+  return fetchAPI<{ success: boolean; message: string }>(
+    `/auth/users/${userId}`,
+    { method: "PUT", body: JSON.stringify(data), token }
+  );
+}
+
+export async function deleteUser(token: string, userId: string) {
+  return fetchAPI<{ success: boolean; message: string }>(
+    `/auth/users/${userId}`,
+    { method: "DELETE", token }
+  );
+}
+
 // ── Patients ──
 export async function getPatients(token: string, search?: string) {
   const params = search ? `?search=${encodeURIComponent(search)}` : "";
@@ -320,4 +334,13 @@ export interface CreateUserRequest {
   specialty?: string;
   license_number?: string;
   phone?: string;
+}
+
+export interface UpdateUserRequest {
+  full_name?: string;
+  role?: string;
+  specialty?: string;
+  license_number?: string;
+  phone?: string;
+  is_active?: boolean;
 }

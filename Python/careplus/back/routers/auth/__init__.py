@@ -7,3 +7,5 @@ AUTH_ROUTER: APIRouter = APIRouter(
 
 from . import POST
 from . import GET
+from . import PUT
+from . import DELETE

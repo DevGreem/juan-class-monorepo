@@ -137,3 +137,10 @@ class SupabaseClient:
             email=response.user.email or "",
             needs_confirmation=False
         )
+
+    @staticmethod
+    def admin_delete_user(user_id: str) -> None:
+        """Delete a user from Supabase Auth using the service_role key."""
+        
+        admin_client = SupabaseClient.generate_admin_client()
+        admin_client.auth.admin.delete_user(user_id)
