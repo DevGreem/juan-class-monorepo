@@ -19,6 +19,7 @@ from typing import (
 @dataclass
 class SupabaseLoginResult:
     access_token: str
+    refresh_token: str
     user_id: str
     email: str
     logged_client: "SupabaseClient"
@@ -94,8 +95,9 @@ class SupabaseClient:
         
         return SupabaseLoginResult(
             access_token=response.session.access_token,
+            refresh_token=response.session.refresh_token,
             user_id=response.user.id if response.user else "",
-            email=response.user.email if response.user else "",
+            email=response.user.email or "" if response.user else "",
             logged_client=SupabaseClient(response.session.access_token)
         )
 
@@ -136,6 +138,24 @@ class SupabaseClient:
             user_id=response.user.id,
             email=response.user.email or "",
             needs_confirmation=False
+        )
+
+    @staticmethod
+    def refresh_session(refresh_token: str) -> SupabaseLoginResult:
+        """Refresh an expired session using the refresh_token."""
+        
+        client = SupabaseClient.generate_client()
+        response = client.auth.refresh_session(refresh_token)
+        
+        if not response.session:
+            raise Exception("Could not refresh session")
+        
+        return SupabaseLoginResult(
+            access_token=response.session.access_token,
+            refresh_token=response.session.refresh_token,
+            user_id=response.user.id if response.user else "",
+            email=response.user.email or "" if response.user else "",
+            logged_client=SupabaseClient(response.session.access_token)
         )
 
     @staticmethod

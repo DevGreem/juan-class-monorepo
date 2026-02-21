@@ -73,6 +73,7 @@ def verify_otp(data: VerifyOtpRequest) -> LoginResponse:
         
         return LoginResponse(
             token=record['access_token'],
+            refresh_token=record.get('refresh_token'),
             success=True,
             requires_verification=False,
             message="Verificación exitosa"

@@ -62,7 +62,7 @@ export default function LoginPage() {
         setNeeds2FA(true);
         setUserId(result.user_id);
       } else if (result.success && result.token) {
-        setToken(result.token);
+        setToken(result.token, result.refresh_token);
         router.push("/");
       }
     } catch (err) {
@@ -87,7 +87,7 @@ export default function LoginPage() {
     try {
       const result = await verifyOtp(userId, code);
       if (result.success && result.token) {
-        setToken(result.token);
+        setToken(result.token, result.refresh_token);
         router.push("/");
       }
     } catch (err) {

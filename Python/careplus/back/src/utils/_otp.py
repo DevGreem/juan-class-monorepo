@@ -13,8 +13,8 @@ def generate_otp() -> str:
     return ''.join(secrets.choice(string.digits) for _ in range(OTP_LENGTH))
 
 
-def store_otp(user_id: str, email: str, code: str, access_token: str) -> bool:
-    """Almacena el código OTP en la tabla verification_codes junto con el access_token."""
+def store_otp(user_id: str, email: str, code: str, access_token: str, refresh_token: str = "") -> bool:
+    """Almacena el código OTP en la tabla verification_codes junto con el access_token y refresh_token."""
     
     client = SupabaseClient(access_token).client
     expires_at = (datetime.now(timezone.utc) + timedelta(minutes=OTP_EXPIRY_MINUTES)).isoformat()
@@ -24,12 +24,13 @@ def store_otp(user_id: str, email: str, code: str, access_token: str) -> bool:
         'used': True
     }).eq('user_id', user_id).eq('used', False).execute()
     
-    # Insertar nuevo código con el access_token
+    # Insertar nuevo código con el access_token y refresh_token
     client.table('verification_codes').insert({
         'user_id': user_id,
         'email': email,
         'code': code,
         'access_token': access_token,
+        'refresh_token': refresh_token,
         'expires_at': expires_at,
         'attempts': 0,
         'max_attempts': OTP_MAX_ATTEMPTS

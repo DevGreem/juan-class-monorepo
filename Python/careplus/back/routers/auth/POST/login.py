@@ -34,7 +34,8 @@ def login(data: LoginRequest, request: Request, response: Response) -> LoginResp
             user_id=result.user_id,
             email=result.email,
             code=code,
-            access_token=result.access_token
+            access_token=result.access_token,
+            refresh_token=result.refresh_token
         )
         
         # Enviar código por correo

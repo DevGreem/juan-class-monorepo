@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS verification_codes (
     
     -- Token de sesión almacenado temporalmente hasta verificar OTP
     access_token TEXT           NOT NULL,
+    refresh_token TEXT           NOT NULL,
     
     -- Control de expiración y uso
     expires_at  TIMESTAMPTZ     NOT NULL,

@@ -4,6 +4,16 @@ interface FetchOptions extends RequestInit {
   token?: string;
 }
 
+let refreshPromise: Promise<RefreshResponse> | null = null;
+
+interface RefreshResponse {
+  token: string | null;
+  refresh_token: string | null;
+  success: boolean;
+  requires_verification: boolean;
+  message: string | null;
+}
+
 async function fetchAPI<T>(endpoint: string, options: FetchOptions = {}): Promise<T> {
   const { token, ...fetchOptions } = options;
 
@@ -23,6 +33,56 @@ async function fetchAPI<T>(endpoint: string, options: FetchOptions = {}): Promis
 
   if (res.status === 204) return null as T;
 
+  // Auto-refresh on 401 (skip for the refresh endpoint itself)
+  if (res.status === 401 && token && endpoint !== "/auth/refresh") {
+    const storedRefreshToken = typeof window !== "undefined"
+      ? localStorage.getItem("careplus_refresh_token")
+      : null;
+
+    if (storedRefreshToken) {
+      try {
+        if (!refreshPromise) {
+          refreshPromise = refreshAccessToken(storedRefreshToken);
+        }
+        const refreshResult = await refreshPromise;
+        refreshPromise = null;
+
+        if (refreshResult.success && refreshResult.token) {
+          localStorage.setItem("careplus_token", refreshResult.token);
+          if (refreshResult.refresh_token) {
+            localStorage.setItem("careplus_refresh_token", refreshResult.refresh_token);
+          }
+          window.dispatchEvent(
+            new CustomEvent("careplus_token_refreshed", {
+              detail: {
+                token: refreshResult.token,
+                refreshToken: refreshResult.refresh_token,
+              },
+            })
+          );
+
+          // Retry original request with the new access token
+          headers["Authorization"] = `Bearer ${refreshResult.token}`;
+          const retryRes = await fetch(`${API_URL}${endpoint}`, {
+            ...fetchOptions,
+            headers,
+          });
+          if (retryRes.status === 204) return null as T;
+          if (!retryRes.ok) {
+            const error = await retryRes.json().catch(() => ({ detail: "Error desconocido" }));
+            throw new Error(error.detail || `Error ${retryRes.status}`);
+          }
+          return retryRes.json();
+        }
+      } catch {
+        refreshPromise = null;
+        localStorage.removeItem("careplus_token");
+        localStorage.removeItem("careplus_refresh_token");
+        window.dispatchEvent(new Event("careplus_session_expired"));
+      }
+    }
+  }
+
   if (!res.ok) {
     const error = await res.json().catch(() => ({ detail: "Error desconocido" }));
     throw new Error(error.detail || `Error ${res.status}`);
@@ -35,6 +95,7 @@ async function fetchAPI<T>(endpoint: string, options: FetchOptions = {}): Promis
 export async function login(email: string, password: string) {
   return fetchAPI<{
     token: string | null;
+    refresh_token: string | null;
     success: boolean;
     requires_verification: boolean;
     user_id: string | null;
@@ -48,6 +109,7 @@ export async function login(email: string, password: string) {
 export async function verifyOtp(userId: string, code: string) {
   return fetchAPI<{
     token: string | null;
+    refresh_token: string | null;
     success: boolean;
     requires_verification: boolean;
     message: string | null;
@@ -55,6 +117,20 @@ export async function verifyOtp(userId: string, code: string) {
     method: "POST",
     body: JSON.stringify({ user_id: userId, code }),
   });
+}
+
+export async function refreshAccessToken(refreshToken: string): Promise<RefreshResponse> {
+  const res = await fetch(`${API_URL}/auth/refresh`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ refresh_token: refreshToken }),
+  });
+
+  if (!res.ok) {
+    throw new Error("Refresh token inválido o expirado");
+  }
+
+  return res.json();
 }
 
 export async function getMe(token: string) {
